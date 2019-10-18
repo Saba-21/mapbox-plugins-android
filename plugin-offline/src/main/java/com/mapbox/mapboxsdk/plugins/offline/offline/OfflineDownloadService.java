@@ -43,9 +43,9 @@ import static com.mapbox.mapboxsdk.plugins.offline.utils.NotificationUtils.setup
  */
 public class OfflineDownloadService extends Service {
 
-  private MapSnapshotter mapSnapshotter;
-  NotificationManagerCompat notificationManager;
-  NotificationCompat.Builder notificationBuilder;
+//  private MapSnapshotter mapSnapshotter;
+//  NotificationManagerCompat notificationManager;
+//  NotificationCompat.Builder notificationBuilder;
   OfflineDownloadStateReceiver broadcastReceiver;
 
   // map offline regions to requests, ids are received with onStartCommand, these match serviceId
@@ -56,11 +56,11 @@ public class OfflineDownloadService extends Service {
   public void onCreate() {
     super.onCreate();
     Timber.v("Service onCreate method called.");
-    // Setup notification manager and channel
-    notificationManager = NotificationManagerCompat.from(this);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      setupNotificationChannel();
-    }
+//    // Setup notification manager and channel
+//    notificationManager = NotificationManagerCompat.from(this);
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//      setupNotificationChannel();
+//    }
 
     // Register the broadcast receiver needed for updating APIs in the OfflinePlugin class.
     broadcastReceiver = new OfflineDownloadStateReceiver();
@@ -131,7 +131,7 @@ public class OfflineDownloadService extends Service {
             regionLongSparseArray.put(options.uuid(), offlineRegion);
 
             launchDownload(options, offlineRegion);
-            showNotification(options);
+//            showNotification(options);
           }
 
           @Override
@@ -142,28 +142,28 @@ public class OfflineDownloadService extends Service {
   }
 
 
-  void showNotification(final OfflineDownloadOptions offlineDownload) {
-    notificationBuilder = NotificationUtils.toNotificationBuilder(this,
-      offlineDownload, OfflineDownloadStateReceiver.createNotificationIntent(
-        getApplicationContext(), offlineDownload), offlineDownload.notificationOptions(),
-      OfflineDownloadStateReceiver.createCancelIntent(getApplicationContext(), offlineDownload)
-    );
-    startForeground(offlineDownload.uuid().intValue(), notificationBuilder.build());
-
-    if (offlineDownload.notificationOptions().requestMapSnapshot()) {
-      // create map bitmap to show as notification icon
-      createMapSnapshot(offlineDownload.definition(), new MapSnapshotter.SnapshotReadyCallback() {
-        @Override
-        public void onSnapshotReady(MapSnapshot snapshot) {
-          final int regionId = offlineDownload.uuid().intValue();
-          if (regionLongSparseArray.get(regionId) != null) {
-            notificationBuilder.setLargeIcon(snapshot.getBitmap());
-            notificationManager.notify(regionId, notificationBuilder.build());
-          }
-        }
-      });
-    }
-  }
+//  void showNotification(final OfflineDownloadOptions offlineDownload) {
+//    notificationBuilder = NotificationUtils.toNotificationBuilder(this,
+//      offlineDownload, OfflineDownloadStateReceiver.createNotificationIntent(
+//        getApplicationContext(), offlineDownload), offlineDownload.notificationOptions(),
+//      OfflineDownloadStateReceiver.createCancelIntent(getApplicationContext(), offlineDownload)
+//    );
+//    startForeground(offlineDownload.uuid().intValue(), notificationBuilder.build());
+//
+//    if (offlineDownload.notificationOptions().requestMapSnapshot()) {
+//      // create map bitmap to show as notification icon
+//      createMapSnapshot(offlineDownload.definition(), new MapSnapshotter.SnapshotReadyCallback() {
+//        @Override
+//        public void onSnapshotReady(MapSnapshot snapshot) {
+//          final int regionId = offlineDownload.uuid().intValue();
+//          if (regionLongSparseArray.get(regionId) != null) {
+//            notificationBuilder.setLargeIcon(snapshot.getBitmap());
+//            notificationManager.notify(regionId, notificationBuilder.build());
+//          }
+//        }
+//      });
+//    }
+//  }
 
   private void createMapSnapshot(OfflineRegionDefinition definition,
                                  MapSnapshotter.SnapshotReadyCallback callback) {
@@ -174,8 +174,8 @@ public class OfflineDownloadService extends Service {
     MapSnapshotter.Options options = new MapSnapshotter.Options(width, height);
     options.withStyle(definition.getStyleURL());
     options.withRegion(definition.getBounds());
-    mapSnapshotter = new MapSnapshotter(this, options);
-    mapSnapshotter.start(callback);
+//    mapSnapshotter = new MapSnapshotter(this, options);
+//    mapSnapshotter.start(callback);
   }
 
   private void cancelDownload(final OfflineDownloadOptions offlineDownload) {
@@ -201,9 +201,9 @@ public class OfflineDownloadService extends Service {
   }
 
   private synchronized void removeOfflineRegion(int regionId) {
-    if (notificationBuilder != null) {
-      notificationManager.cancel(regionId);
-    }
+//    if (notificationBuilder != null) {
+//      notificationManager.cancel(regionId);
+//    }
     regionLongSparseArray.remove(regionId);
     if (regionLongSparseArray.size() == 0) {
       stopForeground(true);
@@ -264,19 +264,19 @@ public class OfflineDownloadService extends Service {
 
     if (percentage % 2 == 0 && regionLongSparseArray.get(offlineDownload.uuid().intValue()) != null) {
       OfflineDownloadStateReceiver.dispatchProgressChanged(this, offlineDownload, percentage);
-      if (notificationBuilder != null) {
-        notificationBuilder.setProgress(100, percentage, false);
-        notificationManager.notify(offlineDownload.uuid().intValue(), notificationBuilder.build());
-      }
+//      if (notificationBuilder != null) {
+//        notificationBuilder.setProgress(100, percentage, false);
+//        notificationManager.notify(offlineDownload.uuid().intValue(), notificationBuilder.build());
+//      }
     }
   }
 
   @Override
   public void onDestroy() {
     super.onDestroy();
-    if (mapSnapshotter != null) {
-      mapSnapshotter.cancel();
-    }
+//    if (mapSnapshotter != null) {
+//      mapSnapshotter.cancel();
+//    }
     if (broadcastReceiver != null) {
       getApplicationContext().unregisterReceiver(broadcastReceiver);
     }
