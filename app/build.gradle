@@ -3,6 +3,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 
+apply plugin: 'maven'
+
+group = 'com.github.Saba-21'
+
 android {
   compileSdkVersion androidVersions.compileSdkVersion
 
